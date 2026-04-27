@@ -140,8 +140,6 @@ SSL_KEY=caminho/para/key.pem
 ### Inicialização
 ```bash
 # Cria as tabelas e migra colunas existentes
-python migrar_tudo.py
-
 # Inicia o servidor
 python app.py
 ```
@@ -184,7 +182,6 @@ Patrimônios já existentes são atualizados; novos são criados.
 ```
 patrimonio/
 ├── app.py                  # Backend completo (Flask + rotas + models)
-├── migrar_tudo.py          # Script de migration do banco
 ├── .env                    # Variáveis de ambiente (não versionar)
 ├── README.md
 └── templates/
