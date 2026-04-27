@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PatrimônioTech — Fama Soluções</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --p900:#3d1236;--p800:#5a1f4f;--p700:#7b2d6e;--p600:#9b3d8e;
+    --p400:#c060b0;--p200:#e8b8de;--p100:#f7edf5;
+    --pink:#d94f8a;--white:#ffffff;
+    --text:#1a0a18;--text-soft:#6b4a66;--border:#e8d8e5;
+    --danger:#dc2626;--danger-bg:#fef2f2;--danger-border:#fecaca;
+  }
+  html,body { height:100%; font-family:"Nunito",sans-serif; background:var(--p100); color:var(--text); }
+
+  /* TOPBAR */
+  .topbar {
+    background:var(--p700); padding:9px 28px;
+    display:flex; align-items:center; justify-content:flex-end; gap:24px;
+  }
+  .topbar a {
+    display:flex; align-items:center; gap:7px;
+    font-size:12.5px; font-weight:600; color:rgba(255,255,255,0.75);
+    text-decoration:none; transition:color .2s;
+  }
+  .topbar a:hover { color:white; }
+  .topbar svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+
+  /* LAYOUT */
+  .layout { min-height:calc(100vh - 38px); display:grid; grid-template-columns:1fr 1fr; }
+
+  /* LEFT */
+  .panel-left {
+    background:linear-gradient(160deg, var(--p900) 0%, var(--p800) 55%, var(--p700) 100%);
+    position:relative; overflow:hidden;
+    display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+    padding:60px 56px;
+  }
+  .panel-left::before {
+    content:""; position:absolute; inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                     linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size:48px 48px;
+  }
+  .orb { position:absolute; border-radius:50%; filter:blur(70px); pointer-events:none; }
+  .orb-1 { width:360px; height:360px; background:rgba(217,79,138,.22); top:-80px; right:-80px; }
+  .orb-2 { width:280px; height:280px; background:rgba(98,40,215,.15); bottom:-60px; left:-60px; }
+
+  .left-content { position:relative; z-index:1; }
+  .logo-wrap { margin-bottom:40px; }
+  .logo-wrap img { height:52px; display:block; }
+  .left-content h1 {
+    font-family:"DM Serif Display",serif;
+    font-size:38px; font-weight:400; color:white;
+    line-height:1.18; letter-spacing:-0.5px; margin-bottom:16px;
+  }
+  .left-content h1 em { font-style:italic; color:var(--p200); }
+  .left-content p { font-size:14.5px; color:rgba(255,255,255,.55); line-height:1.7; max-width:320px; }
+
+  .info-card {
+    margin-top:40px;
+    background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+    border-radius:16px; padding:18px 22px; max-width:320px;
+  }
+  .info-card .ic-title { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.4); margin-bottom:10px; }
+  .info-card .ic-row { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,.07); }
+  .info-card .ic-row:last-child { border-bottom:none; padding-bottom:0; }
+  .info-card .ic-row svg { width:14px; height:14px; stroke:var(--p400); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+  .info-card .ic-row span { font-size:12.5px; color:rgba(255,255,255,.6); font-weight:500; }
+  .info-card .ic-row strong { color:rgba(255,255,255,.9); font-weight:700; }
+
+  /* RIGHT */
+  .panel-right {
+    background:var(--white);
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    padding:60px 56px;
+  }
+  .form-box { width:100%; max-width:380px; animation:fadeUp .6s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  .form-eyebrow {
+    display:flex; align-items:center; gap:10px;
+    font-size:11.5px; font-weight:800; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--p600); margin-bottom:10px;
+  }
+  .form-eyebrow::before { content:""; width:24px; height:2px; background:var(--p400); display:block; border-radius:2px; }
+  .form-title {
+    font-family:"DM Serif Display",serif;
+    font-size:30px; font-weight:400; color:var(--text);
+    letter-spacing:-0.4px; margin-bottom:6px; line-height:1.2;
+  }
+  .form-sub { font-size:13.5px; color:var(--text-soft); margin-bottom:32px; line-height:1.6; }
+
+  .error-box {
+    display:none; border-radius:12px; padding:12px 16px;
+    background:var(--danger-bg); border:1px solid var(--danger-border);
+    color:var(--danger); font-size:13px; font-weight:600;
+    margin-bottom:20px; display:flex; align-items:center; gap:10px;
+    animation:shake .4s ease;
+  }
+  .error-box.hidden { display:none; }
+  .error-box svg { width:16px; height:16px; stroke:var(--danger); fill:none; stroke-width:2; flex-shrink:0; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-5px)} 40%,80%{transform:translateX(5px)} }
+
+  .field { margin-bottom:20px; }
+  .field label { display:block; font-size:12px; font-weight:700; color:var(--text-soft); letter-spacing:.5px; text-transform:uppercase; margin-bottom:8px; }
+
+  .input-wrap { position:relative; }
+  .input-wrap .ico {
+    position:absolute; left:16px; top:50%; transform:translateY(-50%);
+    width:17px; height:17px; stroke:var(--p400); fill:none;
+    stroke-width:2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none;
+  }
+  .input-wrap input {
+    width:100%; padding:14px 46px 14px 46px;
+    border:1.5px solid var(--border); border-radius:12px;
+    font-family:"Nunito",sans-serif; font-size:14px; font-weight:600; color:var(--text);
+    background:var(--p100); outline:none;
+    transition:border-color .2s, box-shadow .2s, background .2s;
+  }
+  .input-wrap input:focus { border-color:var(--p600); background:var(--white); box-shadow:0 0 0 4px rgba(155,61,142,.1); }
+  .input-wrap input::placeholder { color:#c4a8bf; font-weight:400; }
+  .toggle-pw {
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    background:none; border:none; color:var(--p400); cursor:pointer; font-size:16px; padding:4px;
+  }
+  .toggle-pw:hover { color:var(--p700); }
+
+  .btn-submit {
+    width:100%; margin-top:4px;
+    background:linear-gradient(135deg, var(--pink) 0%, var(--p700) 100%);
+    border:none; border-radius:12px; color:white; cursor:pointer;
+    font-family:"Nunito",sans-serif; font-size:15px; font-weight:800;
+    letter-spacing:.3px; padding:15px;
+    transition:transform .15s, box-shadow .2s;
+    box-shadow:0 8px 24px rgba(217,79,138,.3);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .btn-submit svg { width:18px; height:18px; stroke:white; fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+  .btn-submit:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(217,79,138,.42); }
+  .btn-submit:active { transform:scale(.98); }
+  .btn-submit:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+
+  .form-footer { margin-top:28px; display:flex; flex-direction:column; gap:8px; }
+  .contact-row { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-soft); }
+  .contact-row svg { width:14px; height:14px; stroke:var(--p400); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+  .contact-row a { color:var(--text-soft); text-decoration:none; font-weight:600; }
+  .contact-row a:hover { color:var(--p700); }
+
+  @media(max-width:768px){
+    .layout { grid-template-columns:1fr; min-height:auto; }
+    .panel-left {
+      padding:36px 28px 32px;
+      min-height:auto;
+    }
+    .left-content h1 { font-size:28px; }
+    .left-content p { font-size:13.5px; }
+    .info-card { display:none; }
+    .logo-wrap { margin-bottom:24px; }
+    .panel-right {
+      background:var(--white);
+      padding:32px 24px 40px;
+      border-radius:24px 24px 0 0;
+      position:relative; z-index:2;
+    }
+    .form-box { max-width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="tel:8530457474">
+    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    (85) 3045-7474
+  </a>
+  <a href="mailto:sac@solucoesfama.com.br">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    sac@solucoesfama.com.br
+  </a>
+</div>
+
+<div class="layout">
+  <!-- LEFT -->
+  <div class="panel-left">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="left-content">
+      <div class="logo-wrap">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAA3CAYAAAD6+O8NAAAdXUlEQVR4nO18W3CcxbVud//X0Vw0M/KM7hKSLVnCdwOWbdiOHVK+UKEqCZdcDpjCRV5SvJDUTh542LyE5ISq5ClUyAM4TgURQk44zgZiLA6GYIyxLSNjhG2NlTG2rpZGc5//1t37YXoN7d8yNjlVe+fBq8rl0a+/u1evtXpdvl4jhG7STbpJN+km3aSbdJNu0k26STfpf5AMwzDknzHGSFEUBSGEFEEYY+R/B34PzxRFUQKBQMA/v3+sPJ+qqoo8h6qqCiEEI4SQPJeu67qqqrX34B1CCIbPmqZpuq7r/nlgvLz+YvPIa8rv+Mf794QxRvJa8Dv/M78crphP0zTNdV0XY4x0XTds27YNwzAopZ7neRQhhOrq6uqi0Wi953kexpiYpmnOzMxMu67rUUopzIEQQqZpGpZl2bBAIBAI1NfX1wcCgYDrum65XC47juPYtm3DGIwx4pzXFMGqxGVGDcMwGGMMxhBCcGNjY5PjOI6maVqlUqnkcrmcPIYQghljHGOMVFWt8VhfX18fDofDtm3bnud5uVwuSwghuq4blUqlzDlH8p4WW1/Xdd1xHAchhEKCFEUhCCFEKWXlcrlcKBTy8rqqqiqe51GMMdI0rTb+CoXASzLznHOEMUadnZ2dGzZsGFi1atWqdevWrQuFQiHOOc/n8/lf/OIX//vw4cPvC6tQKKWUEIIVRVExxri7u7t78+bNm9etW7eusbGxMRaLxRhjrFwul2ZmZmZHRkZGTp06NfLpp5+esSzLKpfLZWE9WNM03bZtWxNULpfLiqIohBDS1NTUdMcdd9zR19e3vKWlpTUej8cDgYA5MzMze/r06Y8//vjj0ydPnjyZz+fz4XA4VKlUKp7n0Xg8Hl+/fv36W2+99da+vr6+RCKRsAR98skno6OjoxMTE+NZS664TmSjgQAAAABJRU5ErkJggg==" alt="Fama Soluções">
+      </div>
+      <h1>Controle de<br><em>Patrimônios</em><br>de TI</h1>
+      <p>Gerencie monitores, desktops, notebooks e estabilizadores com rastreamento completo de contratos e localizações.</p>
+      <div class="info-card">
+        <div class="ic-title">Funcionalidades</div>
+        <div class="ic-row">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>Gestão de <strong>equipamentos e contratos</strong></span>
+        </div>
+        <div class="ic-row">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Controle de <strong>localizações</strong></span>
+        </div>
+        <div class="ic-row">
+          <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          <span>Leitor de <strong>QR code e código de barras</strong></span>
+        </div>
+        <div class="ic-row">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Relatórios em <strong>Excel e PDF</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="panel-right">
+    <div class="form-box">
+      <div class="form-eyebrow">Acesso ao sistema</div>
+      <h2 class="form-title">Bem-vindo de volta</h2>
+      <p class="form-sub">Entre com suas credenciais para acessar o painel de controle de patrimônios.</p>
+
+      <div class="error-box hidden" id="error-box">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="error-msg"></span>
+      </div>
+
+      <div class="field">
+        <label>E-mail</label>
+        <div class="input-wrap">
+          <svg class="ico" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input id="email" type="email" placeholder="seu@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')fazerLogin()">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Senha</label>
+        <div class="input-wrap">
+          <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input id="senha" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()">
+          <button class="toggle-pw" onclick="toggleSenha()" tabindex="-1" type="button">👁</button>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btn-login" onclick="fazerLogin()">
+        <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Entrar no sistema
+      </button>
+
+      <div class="form-footer">
+        <div class="contact-row">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <a href="tel:8530457474">(85) 3045-7474</a>
+        </div>
+        <div class="contact-row">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:sac@solucoesfama.com.br">sac@solucoesfama.com.br</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSenha(){
+  const i=document.getElementById('senha');
+  i.type=i.type==='password'?'text':'password';
+}
+async function fazerLogin(){
+  const email=document.getElementById('email').value.trim();
+  const senha=document.getElementById('senha').value;
+  const errBox=document.getElementById('error-box');
+  const errMsg=document.getElementById('error-msg');
+  const btn=document.getElementById('btn-login');
+  errBox.classList.add('hidden');
+  if(!email||!senha){
+    errMsg.textContent='Preencha e-mail e senha.';
+    errBox.classList.remove('hidden'); return;
+  }
+  btn.disabled=true;
+  btn.innerHTML='<svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56" stroke="white" fill="none" stroke-width="2.5" stroke-linecap="round"/></svg> Entrando...';
+  try{
+    const res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,senha})});
+    const data=await res.json();
+    if(data.sucesso){
+      window.location.href = data.senha_alterada === false ? '/trocar-senha' : '/';
+    }
+    else{ errMsg.textContent=data.erro||'E-mail ou senha incorretos.'; errBox.classList.remove('hidden'); }
+  }catch(e){ errMsg.textContent='Erro de conexão. Tente novamente.'; errBox.classList.remove('hidden'); }
+  btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Entrar no sistema';
+}
+document.getElementById('email').focus();
+</script>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</body>
+</html>
