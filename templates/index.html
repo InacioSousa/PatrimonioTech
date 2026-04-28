@@ -1076,10 +1076,9 @@
           <input type="hidden" id="ch-equipamento-id">
           <div style="position:relative;">
             <input class="form-control" id="ch-equipamento-busca" type="text"
-              placeholder="Digite o patrimônio ou PA..." autocomplete="off"
-              oninput="buscarEquipamentoChamado()"
-              onblur="setTimeout(()=>fecharDropEquip(),250)"
-              disabled style="background:var(--p100);">
+            placeholder="Digite o patrimônio ou PA..." autocomplete="off"
+            oninput="buscarEquipamentoChamado()"
+            onblur="setTimeout(()=>fecharDropEquip(),250)">
             <div id="ch-equip-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 6px 20px rgba(61,18,54,.12);z-index:500;max-height:200px;overflow-y:auto;margin-top:2px;"></div>
           </div>
           <div id="ch-equip-selecionado" style="display:none;margin-top:6px;background:var(--p100);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--p700);">
@@ -2132,6 +2131,10 @@ async function carregarChamados(){
 
 
 // ── Equipamento no modal de chamado ─────────────────────────────────────────
+function escapeHtml(str){
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 function limparEquipamentoChamado(){
   const idEl = document.getElementById('ch-equipamento-id');
   const buscaEl = document.getElementById('ch-equipamento-busca');
@@ -2190,21 +2193,40 @@ function buscarEquipamentoChamado(){
 }
 
 async function carregarEquipamentosPorTipo(){
-  const tipo = document.getElementById('ch-tipo').value;
-  const sel  = document.getElementById('ch-equipamento');
-  sel.innerHTML = '<option value="">Carregando...</option>';
-  if(!tipo){ sel.innerHTML='<option value="">Selecione o tipo primeiro</option>'; return; }
-  const mapa = {Monitor:'monitores',Desktop:'desktops',Estabilizador:'estabilizadores',Notebook:'notebooks'};
+  const tipo    = document.getElementById('ch-tipo').value;
+  const buscaEl = document.getElementById('ch-equipamento-busca');
+  const idEl    = document.getElementById('ch-equipamento-id');
+  const selEl   = document.getElementById('ch-equip-selecionado');
+  const dropEl  = document.getElementById('ch-equip-drop');
+
+  // Limpa estado anterior
+  if(idEl)  idEl.value = '';
+  if(selEl) selEl.style.display = 'none';
+  if(dropEl){ dropEl.innerHTML=''; dropEl.style.display='none'; }
+
+  if(!tipo){
+    if(buscaEl){ buscaEl.disabled=true; buscaEl.value=''; buscaEl.placeholder='Selecione o tipo primeiro'; }
+    return;
+  }
+
+  if(buscaEl){ buscaEl.disabled=true; buscaEl.value=''; buscaEl.placeholder='Carregando...'; }
+
   // API retorna {items, total, pages} — extrai o array
   const resp  = await fetch(`/api/equipamentos?tipo=${tipo.toLowerCase()}&limit=0`).then(r=>r.json());
   const dados = resp.items !== undefined ? resp.items : resp;
   _equipCache[tipo] = dados;
+
   if(!dados.length){
-    sel.innerHTML = '<option value="">Nenhum equipamento cadastrado</option>';
+    if(buscaEl){ buscaEl.placeholder=`Nenhum ${tipo} cadastrado`; buscaEl.disabled=true; }
     return;
   }
-  sel.innerHTML = '<option value="">Selecione o equipamento...</option>'
-    + dados.map(e=>`<option value="${e.id}">${e.numero_patrimonio}${e.pa?' (PA: '+e.pa+')':''} — ${e.localizacao}</option>`).join('');
+
+  // Habilita o campo de busca
+  if(buscaEl){
+    buscaEl.disabled    = false;
+    buscaEl.placeholder = `Digite o patrimônio ou PA...`;
+    buscaEl.focus();
+  }
 }
 
 async function abrirModalChamado(){
